@@ -1,22 +1,27 @@
 class Key {
-  private signature: boolean = Math.random() < 0.5;
+  private signature: number = Math.random();
 
-  public getSignature(): boolean {
+  public getSignature(): number {
     return this.signature;
   }
 }
 class Person {
-  constructor(private key: Key) {}
-
+  constructor(private key: Key) { }
+  
   public getKey(): Key {
-    return key;
+    return this.key;
   }
 }
 
 class House {
   private tenants: Person[] = [];
+  private door: number;
 
-  constructor(private door: boolean, private key: Key) {}
+  constructor(private key: Key) {}
+
+  public getKey(): number {
+    return this.key.getSignature();
+  }
 
   public comeIn(person: Person): void {
     if (this.door) {
@@ -24,17 +29,20 @@ class House {
     }
   }
 }
+
 class MyHouse extends House {
-  public openDoor(myKey: boolean, key: Key): void{
-    console.log('door opened');
-  };
+  public openDoor(key: Key): void {
+    if (key.getSignature() === this.getKey()) {
+      console.log("door opened");
+    }
+  }
 }
 
 const key = new Key();
-const house = new MyHouse(true, key);
+const house = new MyHouse(key);
 const person = new Person(key);
 
-house.openDoor(person.getKey().getSignature(), key);
+house.openDoor(person.getKey());
 
 house.comeIn(person);
 
